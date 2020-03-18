@@ -1,0 +1,55 @@
+
+<div *ngIf="tasks$ | async" class="container">
+  <div class="controls">
+    <div class="sorting">
+      <mat-form-field>
+        <mat-label>Sort By</mat-label>
+        <mat-select #sort (selectionChange)="sortBy($event)">
+          <mat-option  [value]="'priority'">
+            Priority
+          </mat-option>
+          <mat-option  [value]="'assignee'">
+            Assignee
+          </mat-option>
+          <mat-option  [value]="'name'">
+            Name
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-icon [class.reversed] = reversed (click)="reverseSort()" class="sorting-arrow" matSuffix>arrow_right_alt</mat-icon>
+    </div>
+    <mat-form-field class="grouping">
+      <mat-label>Group By</mat-label>
+      <mat-select  (selectionChange)="groupBy($event)">
+        <mat-option  [value]="'status'">
+          Status
+        </mat-option>
+        <mat-option  [value]="'assignee'">
+          Assignee
+        </mat-option>
+        <mat-option  [value]="'priority'">
+          Priority
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="searching">
+      <mat-label><mat-icon matSuffix>search</mat-icon><span>Filter...</span></mat-label>
+      <input matInput type="text">
+    </mat-form-field>
+  </div>
+
+  <div class="body">
+    <div class="table">
+      <div *ngFor = "let title of (tasks$ | async).grouping; let i = index">
+        <div class="table-header">
+          {{ title }}
+        </div>
+        <div *ngFor="let item of (tasks$ | async).tasks[i]" class="table-row">
+          <h3>{{item.title}}</h3>
+          <p>{{item.description}}</p>
+          <p>{{item.assignee.name}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
