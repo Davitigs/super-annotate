@@ -44,10 +44,17 @@
         <div class="table-header">
           {{ title }}
         </div>
-        <div *ngFor="let item of (tasks$ | async).tasks[i]" class="table-row">
+        <div *ngFor="let item of (tasks$ | async).tasks[i]; let itemInd = index" class="table-row">
           <h3>{{item.title}}</h3>
           <p>{{item.description}}</p>
-          <p>{{item.assignee.name}}</p>
+          <div class="name-button-container">
+            <p>{{item.assignee.name}}</p>
+            <div>
+              <button (click)="replaceItem('previous',  i, itemInd)" *ngIf="i > 0" mat-stroked-button color="primary">&#8592;</button>
+              <button (click)="replaceItem('next',  i, itemInd)" *ngIf="i < (tasks$ | async).tasks.length - 1 " mat-stroked-button color="primary">&#8594;</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

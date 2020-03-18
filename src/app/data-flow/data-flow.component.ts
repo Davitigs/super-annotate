@@ -41,6 +41,9 @@ export class DataFlowComponent implements OnInit {
     this.tasksService.reverseSort();
   }
 
+  replaceItem(direction: string, arrIndex: number, itemIndex: number, ) {
+    this.tasksService.replaceItem(direction, arrIndex, itemIndex);
+  }
 
 
 }

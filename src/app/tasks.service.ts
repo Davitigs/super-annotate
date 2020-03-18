@@ -77,33 +77,13 @@ export class TasksService {
     return this.state.value.tasks;
   }
 
-//   this.clearState();
-//   return  this.serverData.pipe(
-//     filter(data => !!data),
-//   tap(data => data.sort((a, b) => a[sorting].id - b[sorting].id)),
-//   tap(tasks => this.state.next({...this.stateValue, sorting: [...new Set(tasks
-//     .map(task => task[sorting])
-//     .sort((a, b) => a.id - b.id)
-//     .map(filtered => filtered.title ? filtered.title : filtered.name))]}),
-// ),
-//   map(
-//     tasks => [...new Set(tasks
-// .map(task => task[grouping])
-// .sort((a, b) => a.id - b.id)
-// .map(filtered => filtered.title ? filtered.title : filtered.name ))],
-// ),
-//   tap (grouped => {
-//   this.state.next({...this.stateValue, grouping: [...grouped]});
-//   let itemsArray = [];
-//
-//   grouped.forEach(grp =>
-//   this.serverData.value.filter(dr => itemsArray = [...itemsArray, dr[grouping]  === grp])
-// );
-//   console.log(this.tasksValue);
-//   this.state.next({...this.stateValue, tasks: [...itemsArray]});
-// }),
-// switchMap(() => this.state$)
-// );
+  replaceItem(direction, arrIndex, itemIndex) {
+    const replacedItem = this.stateValue.tasks[arrIndex].splice(itemIndex, 1);
+    direction === 'next' ?
+    this.stateValue.tasks[arrIndex + 1].push(...replacedItem) :
+      this.stateValue.tasks[arrIndex - 1].push(...replacedItem);
+
+  }
 
 }
 
