@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TasksService } from '../tasks.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
-import { filter, map, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { State } from '../models/state.model';
 
 @Component({
@@ -10,8 +10,9 @@ import { State } from '../models/state.model';
   templateUrl: './data-flow.component.html',
   styleUrls: ['./data-flow.component.scss']
 })
-export class DataFlowComponent implements OnInit {
+export class DataFlowComponent implements OnInit, OnDestroy {
 
+  destroyNotifier = new Subject<void>();
   tasks$: Observable<State>;
   group = 'status';
   sort = 'priority';
@@ -21,23 +22,22 @@ export class DataFlowComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.tasksService.init().subscribe(console.log);
+    this.tasksService.init().pipe(takeUntil(this.destroyNotifier)).subscribe();
     this.tasks$ = this.tasksService.state$;
-    this.tasks$.subscribe(console.log);
   }
 
   groupBy(opt: MatSelectChange) {
     this.group = opt.value;
-    this.tasksService.init(opt.value, this.sort).subscribe();
+    this.tasksService.init(opt.value, this.sort).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   sortBy( opt: MatSelectChange  ) {
     this.sort = opt.value;
-    this.tasksService.init(this.group, opt.value).subscribe();
+    this.tasksService.init(this.group, opt.value).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   reverseSort() {
-    this.reversed = !this.reversed
+    this.reversed = !this.reversed;
     this.tasksService.reverseSort();
   }
 
@@ -45,5 +45,9 @@ export class DataFlowComponent implements OnInit {
     this.tasksService.replaceItem(direction, arrIndex, itemIndex);
   }
 
+  ngOnDestroy() {
+    this.destroyNotifier.next();
+    this.destroyNotifier.complete();
+  }
 
 }

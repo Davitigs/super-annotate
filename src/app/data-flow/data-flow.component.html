@@ -4,7 +4,7 @@
     <div class="sorting">
       <mat-form-field>
         <mat-label>Sort By</mat-label>
-        <mat-select #sort (selectionChange)="sortBy($event)">
+        <mat-select (selectionChange)="sortBy($event)">
           <mat-option  [value]="'priority'">
             Priority
           </mat-option>
