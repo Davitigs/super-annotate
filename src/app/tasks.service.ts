@@ -12,21 +12,21 @@ export class TasksService {
 
   grouping: string;
   sorting: string;
+  sortingDirection: boolean;
   serverData: BehaviorSubject<Tasks[] | null> = new BehaviorSubject<Tasks[]>(null);
   state: BehaviorSubject<State | null> = new BehaviorSubject< State | null >(null);
   state$: Observable<State> = this.state.asObservable();
-  serverData$: Observable<Tasks[]>;
 
   constructor(
     private getTasks: GetTasksService
   ) {
-    this.serverData$ = this.getTasks.getData();
     this.getTasks.getData().pipe(take(1)).subscribe(resp => this.serverData.next(resp));
   }
 
-  init( grouping = 'status', sorting = 'priority' ) {
+  init( grouping = 'status', sorting = 'priority', sortingDirection = false ) {
       this.grouping = grouping;
       this.sorting = sorting;
+      this.sortingDirection = sortingDirection;
       this.resetState();
       return this.serverData.pipe(
         filter(data => !!data),
@@ -47,9 +47,17 @@ export class TasksService {
 
             this.state.next({
               ...this.stateValue, tasks: [
-                tasks.sort((a, b) => sorting === 'name' ?
-                  a.assignee.name.localeCompare(b.assignee.name) :
-                  a[sorting].id - b[sorting].id
+                tasks.sort((a, b) => {
+                    if (!sortingDirection) {
+                      return sorting === 'name' ?
+                        a.assignee.name.localeCompare(b.assignee.name) :
+                        a[sorting].id - b[sorting].id;
+                    } else {
+                      return sorting === 'name' ?
+                        b.assignee.name.localeCompare(a.assignee.name) :
+                        b[sorting].id - a[sorting].id;
+                    }
+                  }
                 )
               ]
             });
@@ -69,19 +77,10 @@ export class TasksService {
     this.state.next({...this.stateValue, grouping: [], sorting: [], tasks: []});
   }
 
-  reverseSort() {
-    let reversedSorting = [];
-    this.stateValue.tasks.forEach(task => reversedSorting = [...reversedSorting, task.reverse()]);
-    this.state.next({...this.stateValue, tasks: reversedSorting});
-  }
-
   get stateValue() {
     return this.state.value;
   }
 
-  get tasksValue() {
-    return this.state.value.tasks;
-  }
 
   replaceItem(direction, arrIndex, itemIndex) {
     let tasksCopy = [];
@@ -93,7 +92,7 @@ export class TasksService {
       tasksCopy[arrIndex - 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1));
 
     this.state.next({...this.stateValue, tasks: [...tasksCopy]});
-    this.init(this.grouping, this.sorting).subscribe();
+    this.init(this.grouping, this.sorting, this.sortingDirection).subscribe();
 
   }
 
@@ -109,7 +108,8 @@ export class TasksService {
             }
           }));
           this.serverData.next(origTasks);
-        })
+        }),
+        mergeMap(() => this.init(this.grouping, this.sorting, this.sortingDirection))
       )
       .subscribe();
   }
