@@ -30,3 +30,8 @@ $super-annotate-theme: mat-light-theme($super-annotate-primary, $super-annotate-
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.highlight {
+  background: #fff324;
+}

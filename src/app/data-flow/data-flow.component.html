@@ -1,37 +1,39 @@
 
 <div *ngIf="tasks$ | async" class="container">
-  <div class="controls">
-    <div class="sorting">
-      <mat-form-field>
-        <mat-label>Sort By</mat-label>
-        <mat-select (selectionChange)="sortBy($event)">
-          <mat-option  [value]="'priority'">
-            Priority
+  <div class="navbar">
+    <div class="controls">
+      <div class="sorting">
+        <mat-form-field>
+          <mat-label>Sort By</mat-label>
+          <mat-select (selectionChange)="sortBy($event)">
+            <mat-option  [value]="'priority'">
+              Priority
+            </mat-option>
+            <mat-option  [value]="'assignee'">
+              Assignee
+            </mat-option>
+            <mat-option  [value]="'name'">
+              Name
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-icon [class.reversed] = reversed (click)="reverseSort()" class="sorting-arrow" matSuffix>arrow_right_alt</mat-icon>
+      </div>
+      <mat-form-field class="grouping">
+        <mat-label>Group By</mat-label>
+        <mat-select  (selectionChange)="groupBy($event)">
+          <mat-option  [value]="'status'">
+            Status
           </mat-option>
           <mat-option  [value]="'assignee'">
             Assignee
           </mat-option>
-          <mat-option  [value]="'name'">
-            Name
+          <mat-option  [value]="'priority'">
+            Priority
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-icon [class.reversed] = reversed (click)="reverseSort()" class="sorting-arrow" matSuffix>arrow_right_alt</mat-icon>
     </div>
-    <mat-form-field class="grouping">
-      <mat-label>Group By</mat-label>
-      <mat-select  (selectionChange)="groupBy($event)">
-        <mat-option  [value]="'status'">
-          Status
-        </mat-option>
-        <mat-option  [value]="'assignee'">
-          Assignee
-        </mat-option>
-        <mat-option  [value]="'priority'">
-          Priority
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
     <mat-form-field class="searching">
       <mat-label><mat-icon matSuffix>search</mat-icon><span>Filter...</span></mat-label>
       <input #filter matInput type="text">
@@ -50,8 +52,8 @@
             (item.title.toLowerCase().includes(filter.value.toLowerCase()) ||
              item.description.toLowerCase().includes(filter.value.toLowerCase()))"
             class="table-row">
-            <h3>{{item.title}}</h3>
-            <p>{{item.description}}</p>
+            <h3 [innerHTML]="item.title | highlightFilter: [filter.value]"></h3>
+            <p [innerHTML]="item.description | highlightFilter: [filter.value]"></p>
             <div class="name-button-container">
               <p>{{item.assignee.name}}</p>
               <div *ngIf="group === 'status'">
