@@ -47,6 +47,7 @@ export class DataFlowComponent implements OnInit, OnDestroy {
     this.tasksService.replaceItem(direction, arrIndex, itemIndex);
   }
 
+
   ngOnDestroy() {
     this.destroyNotifier.next();
     this.destroyNotifier.complete();

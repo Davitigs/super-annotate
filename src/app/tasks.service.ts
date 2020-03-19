@@ -106,14 +106,15 @@ export class TasksService {
           this.stateValue.tasks.forEach(task => origTasks = [...origTasks, ...task]);
           origTasks.forEach(task => taskgrp.forEach(tsk => {
             if ( tsk.id === task.id ) {
-              task.title = tsk.title + 'qqqqqqq';
+              task.title = tsk.title;
             }
           }));
           this.serverData.next(origTasks);
         })
       )
-      .subscribe()
+      .subscribe();
   }
+
 
 }
 

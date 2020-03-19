@@ -34,7 +34,7 @@
     </mat-form-field>
     <mat-form-field class="searching">
       <mat-label><mat-icon matSuffix>search</mat-icon><span>Filter...</span></mat-label>
-      <input matInput type="text">
+      <input #filter matInput type="text">
     </mat-form-field>
   </div>
 
@@ -44,17 +44,22 @@
         <div class="table-header">
           {{ title }}
         </div>
-        <div *ngFor="let item of (tasks$ | async).tasks[i]; let itemInd = index" class="table-row">
-          <h3>{{item.title}}</h3>
-          <p>{{item.description}}</p>
-          <div class="name-button-container">
-            <p>{{item.assignee.name}}</p>
-            <div *ngIf="group === 'status'">
-              <button (click)="replaceItem('previous',  i, itemInd)" *ngIf="i > 0 " mat-stroked-button color="primary">&#8592;</button>
-              <button (click)="replaceItem('next',  i, itemInd)" *ngIf="i < (tasks$ | async).tasks.length - 1  " mat-stroked-button color="primary">&#8594;</button>
+        <div *ngFor="let item of (tasks$ | async).tasks[i]; let itemInd = index">
+          <div
+            *ngIf="
+            (item.title.toLowerCase().includes(filter.value.toLowerCase()) ||
+             item.description.toLowerCase().includes(filter.value.toLowerCase()))"
+            class="table-row">
+            <h3>{{item.title}}</h3>
+            <p>{{item.description}}</p>
+            <div class="name-button-container">
+              <p>{{item.assignee.name}}</p>
+              <div *ngIf="group === 'status'">
+                <button (click)="replaceItem('previous',  i, itemInd)" *ngIf="i > 0 " mat-stroked-button color="primary">&#8592;</button>
+                <button (click)="replaceItem('next',  i, itemInd)" *ngIf="i < (tasks$ | async).tasks.length - 1  " mat-stroked-button color="primary">&#8594;</button>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
