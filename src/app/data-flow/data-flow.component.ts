@@ -20,7 +20,7 @@ export class DataFlowComponent implements OnInit, OnDestroy {
   constructor(
     private tasksService: TasksService
   ) {
-    // setInterval(() => this.tasksService.refreshData(), 10000);
+    // setInterval(() => this.tasksService.refreshData(), 15000);
   }
 
   ngOnInit() {

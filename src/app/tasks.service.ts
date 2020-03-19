@@ -10,7 +10,6 @@ import { State } from './models/state.model';
 })
 export class TasksService {
 
-  firstTimeDataObtain = 0;
   grouping: string;
   sorting: string;
   serverData: BehaviorSubject<Tasks[] | null> = new BehaviorSubject<Tasks[]>(null);
@@ -93,8 +92,8 @@ export class TasksService {
       tasksCopy[arrIndex + 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1)) :
       tasksCopy[arrIndex - 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1));
 
-    console.log(tasksCopy);
     this.state.next({...this.stateValue, tasks: [...tasksCopy]});
+    this.init(this.grouping, this.sorting).subscribe();
 
   }
 
