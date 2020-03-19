@@ -49,9 +49,9 @@
           <p>{{item.description}}</p>
           <div class="name-button-container">
             <p>{{item.assignee.name}}</p>
-            <div>
-              <button (click)="replaceItem('previous',  i, itemInd)" *ngIf="i > 0" mat-stroked-button color="primary">&#8592;</button>
-              <button (click)="replaceItem('next',  i, itemInd)" *ngIf="i < (tasks$ | async).tasks.length - 1 " mat-stroked-button color="primary">&#8594;</button>
+            <div *ngIf="group === 'status'">
+              <button (click)="replaceItem('previous',  i, itemInd)" *ngIf="i > 0 " mat-stroked-button color="primary">&#8592;</button>
+              <button (click)="replaceItem('next',  i, itemInd)" *ngIf="i < (tasks$ | async).tasks.length - 1  " mat-stroked-button color="primary">&#8594;</button>
             </div>
           </div>
 

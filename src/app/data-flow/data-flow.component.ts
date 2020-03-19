@@ -19,7 +19,9 @@ export class DataFlowComponent implements OnInit, OnDestroy {
   reversed = false;
   constructor(
     private tasksService: TasksService
-  ) { }
+  ) {
+    // setInterval(() => this.tasksService.refreshData(), 10000);
+  }
 
   ngOnInit() {
     this.tasksService.init().pipe(takeUntil(this.destroyNotifier)).subscribe();
@@ -49,5 +51,7 @@ export class DataFlowComponent implements OnInit, OnDestroy {
     this.destroyNotifier.next();
     this.destroyNotifier.complete();
   }
+
+
 
 }
