@@ -15,7 +15,6 @@ export class TasksService {
   serverData: BehaviorSubject<Tasks[] | null> = new BehaviorSubject<Tasks[]>(null);
   state: BehaviorSubject<State | null> = new BehaviorSubject< State | null >(null);
   state$: Observable<State> = this.state.asObservable();
-  statusGroup$: Observable<{id: number, title: string}[]>;
 
   constructor(
     private getTasks: GetTasksService
@@ -86,6 +85,9 @@ export class TasksService {
     (direction === 'next') ?
       tasksCopy[arrIndex + 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1)) :
       tasksCopy[arrIndex - 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1));
+
+    // the very very very bad way to solve the empty array problem
+
     if (fakeTask) {
       tasksCopy[arrIndex].push(fakeTask);
     }
@@ -104,7 +106,7 @@ export class TasksService {
           this.stateValue.tasks.forEach(task => origTasks = [...origTasks, ...task]);
           origTasks.forEach(task => taskgrp.forEach(tsk => {
             if ( tsk.id === task.id ) {
-              task.title = tsk.title + 'asddsadas';
+              task.title = tsk.title;
             }
           }));
           this.serverData.next(origTasks);
