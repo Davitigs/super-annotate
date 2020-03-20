@@ -15,11 +15,18 @@ export class TasksService {
   serverData: BehaviorSubject<Tasks[] | null> = new BehaviorSubject<Tasks[]>(null);
   state: BehaviorSubject<State | null> = new BehaviorSubject< State | null >(null);
   state$: Observable<State> = this.state.asObservable();
+  statusGroup$: Observable<{id: number, title: string}[]>;
 
   constructor(
     private getTasks: GetTasksService
   ) {
-    this.getTasks.getData().pipe(take(1)).subscribe(resp => this.serverData.next(resp));
+    this.getTasks.getData()
+      .pipe(
+        take(1),
+        tap(tasks => {
+          this.serverData.next(tasks);
+        })
+      ).subscribe();
   }
 
   init( grouping = 'status', sorting = 'priority') {
@@ -39,17 +46,8 @@ export class TasksService {
               ...this.stateValue, sorting: sorting === 'name' ?
                 [...new Set(tasks.map(task => task.assignee).sort((a, b) => a.name.localeCompare(b.name))
                   .map(st => st.name))] :
-                [...new Set(tasks.map(task => task[sorting]).sort((a, b) => a.name ? a.name - b.name : a.id - b.id)
+                [...new Set(tasks.map(task => task[sorting]).sort((a, b) => a.id - b.id)
                   .map(st => !!st.title ? st.title : st.name))]
-            });
-
-            this.state.next({
-              ...this.stateValue, tasks: [
-                tasks.sort((a, b) => sorting === 'name' ?
-                        a.assignee.name.localeCompare(b.assignee.name) :
-                        a[sorting].id - b[sorting].id
-                )
-              ]
             });
 
             let groupedArray = [];
@@ -58,6 +56,7 @@ export class TasksService {
               groupedArray = [...groupedArray, tasks.filter(task => task[grouping].title ?
                 task[grouping].title === grp : task[grouping].name === grp)]);
             this.state.next({...this.stateValue, tasks: [...groupedArray]});
+
           }
         ));
 
@@ -73,35 +72,45 @@ export class TasksService {
 
 
   replaceItem(direction, arrIndex, itemIndex) {
+
     let tasksCopy = [];
+    let fakeTask;
     this.stateValue.tasks.forEach(task => tasksCopy = [...tasksCopy, task]);
+
+    if ( tasksCopy[arrIndex].length === 1 ) {
+      fakeTask = {...tasksCopy[arrIndex][itemIndex]};
+      fakeTask.title = 'fake';
+    }
     tasksCopy[arrIndex][itemIndex].status = (direction === 'next') ?
-      tasksCopy[arrIndex + 1][itemIndex].status : tasksCopy[arrIndex - 1][itemIndex].status;
+      tasksCopy[arrIndex + 1][0].status : tasksCopy[arrIndex - 1][0].status;
     (direction === 'next') ?
       tasksCopy[arrIndex + 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1)) :
       tasksCopy[arrIndex - 1].push(...tasksCopy[arrIndex].splice(itemIndex, 1));
-
-    this.state.next({...this.stateValue, tasks: [...tasksCopy]});
-    this.init(this.grouping, this.sorting).subscribe();
+    if (fakeTask) {
+      tasksCopy[arrIndex].push(fakeTask);
+    }
+    let tasks = [];
+    tasksCopy.forEach(task => task.forEach(tsk => tasks = [...tasks, tsk]));
+    this.serverData.next(tasks);
+    return this.init(this.grouping, this.sorting);
 
   }
 
   refreshData() {
-    this.getTasks.getData()
+    return this.getTasks.getData()
       .pipe(
         tap(taskgrp => {
           let origTasks = [];
           this.stateValue.tasks.forEach(task => origTasks = [...origTasks, ...task]);
           origTasks.forEach(task => taskgrp.forEach(tsk => {
             if ( tsk.id === task.id ) {
-              task.title = tsk.title;
+              task.title = tsk.title + 'asddsadas';
             }
           }));
           this.serverData.next(origTasks);
         }),
         mergeMap(() => this.init(this.grouping, this.sorting))
-      )
-      .subscribe();
+      );
   }
 
 

@@ -46,14 +46,14 @@
         <div class="table-header">
           {{ title }}
         </div>
-        <div *ngFor="let item of (tasks$ | async).tasks[i] | reverse: reversed; let itemInd = index">
+        <div *ngFor="let item of (tasks$ | async).tasks[i] | sort: sort: reversed; let itemInd = index">
           <div
             *ngIf="
             (item.title.toLowerCase().includes(filter.value.toLowerCase()) ||
-             item.description.toLowerCase().includes(filter.value.toLowerCase()))"
+             item.description.toLowerCase().includes(filter.value.toLowerCase())) && item.title !== 'fake'"
             class="table-row">
-            <h3 [innerHTML]="item.title | highlightFilter: [filter.value]"></h3>
-            <p [innerHTML]="item.description | highlightFilter: [filter.value]"></p>
+            <h3 [innerHTML]="item.title | highlightFilter: filter.value"></h3>
+            <p [innerHTML]="item.description | highlightFilter: filter.value"></p>
             <div class="name-button-container">
               <p>{{item.assignee.name}}</p>
               <div *ngIf="group === 'status'">

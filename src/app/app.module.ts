@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { HighlightFilterPipe } from './highlight-filter.pipe';
-import { ReversePipe } from './reverse.pipe';
+import { SortPipe } from './sort.pipe';
 
 
 @NgModule({
@@ -20,7 +20,7 @@ import { ReversePipe } from './reverse.pipe';
     AppComponent,
     DataFlowComponent,
     HighlightFilterPipe,
-    ReversePipe
+    SortPipe
   ],
   imports: [
     BrowserModule,

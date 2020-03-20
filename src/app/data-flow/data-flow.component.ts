@@ -20,7 +20,7 @@ export class DataFlowComponent implements OnInit, OnDestroy {
   constructor(
     private tasksService: TasksService
   ) {
-    // setInterval(() => this.tasksService.refreshData(), 15000);
+    // setInterval(() => this.tasksService.refreshData().pipe(takeUntil(this.destroyNotifier)).subscribe(), 15000);
   }
 
   ngOnInit() {
@@ -40,11 +40,10 @@ export class DataFlowComponent implements OnInit, OnDestroy {
 
   reverseSort() {
     this.reversed = !this.reversed;
-    // this.tasksService.init(this.group, this.sort, this.reversed).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   replaceItem(direction: string, arrIndex: number, itemIndex: number, ) {
-    this.tasksService.replaceItem(direction, arrIndex, itemIndex);
+    this.tasksService.replaceItem(direction, arrIndex, itemIndex).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
 
