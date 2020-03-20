@@ -46,7 +46,7 @@
         <div class="table-header">
           {{ title }}
         </div>
-        <div *ngFor="let item of (tasks$ | async).tasks[i]; let itemInd = index">
+        <div *ngFor="let item of (tasks$ | async).tasks[i] | reverse: reversed; let itemInd = index">
           <div
             *ngIf="
             (item.title.toLowerCase().includes(filter.value.toLowerCase()) ||

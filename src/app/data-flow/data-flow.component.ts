@@ -30,17 +30,17 @@ export class DataFlowComponent implements OnInit, OnDestroy {
 
   groupBy(opt: MatSelectChange) {
     this.group = opt.value;
-    this.tasksService.init(opt.value, this.sort, this.reversed).pipe(takeUntil(this.destroyNotifier)).subscribe();
+    this.tasksService.init(opt.value, this.sort).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   sortBy( opt: MatSelectChange  ) {
     this.sort = opt.value;
-    this.tasksService.init(this.group, opt.value, this.reversed).pipe(takeUntil(this.destroyNotifier)).subscribe();
+    this.tasksService.init(this.group, opt.value).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   reverseSort() {
     this.reversed = !this.reversed;
-    this.tasksService.init(this.group, this.sort, this.reversed).pipe(takeUntil(this.destroyNotifier)).subscribe();
+    // this.tasksService.init(this.group, this.sort, this.reversed).pipe(takeUntil(this.destroyNotifier)).subscribe();
   }
 
   replaceItem(direction: string, arrIndex: number, itemIndex: number, ) {

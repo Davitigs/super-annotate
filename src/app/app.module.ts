@@ -12,13 +12,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { HighlightFilterPipe } from './highlight-filter.pipe';
+import { ReversePipe } from './reverse.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DataFlowComponent,
-    HighlightFilterPipe
+    HighlightFilterPipe,
+    ReversePipe
   ],
   imports: [
     BrowserModule,
