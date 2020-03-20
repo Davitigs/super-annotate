@@ -78,7 +78,7 @@ export class TasksService {
 
     if ( tasksCopy[arrIndex].length === 1 ) {
       fakeTask = {...tasksCopy[arrIndex][itemIndex]};
-      fakeTask.title = 'fake';
+      fakeTask.id = 9999;
     }
     tasksCopy[arrIndex][itemIndex].status = (direction === 'next') ?
       tasksCopy[arrIndex + 1][0].status : tasksCopy[arrIndex - 1][0].status;
@@ -103,10 +103,10 @@ export class TasksService {
       .pipe(
         tap(taskgrp => {
           let origTasks = [];
-          this.stateValue.tasks.forEach(task => origTasks = [...origTasks, ...task]);
+          this.serverData.value.forEach(task => origTasks = [...origTasks, task]);
           origTasks.forEach(task => taskgrp.forEach(tsk => {
             if ( tsk.id === task.id ) {
-              task.title = tsk.title;
+              task.title = tsk.title + 'asdddas';
             }
           }));
           this.serverData.next(origTasks);

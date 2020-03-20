@@ -50,7 +50,7 @@
           <div
             *ngIf="
             (item.title.toLowerCase().includes(filter.value.toLowerCase()) ||
-             item.description.toLowerCase().includes(filter.value.toLowerCase())) && item.title !== 'fake'"
+             item.description.toLowerCase().includes(filter.value.toLowerCase())) && item.id !== 9999"
             class="table-row">
             <h3 [innerHTML]="item.title | highlightFilter: filter.value"></h3>
             <p [innerHTML]="item.description | highlightFilter: filter.value"></p>
